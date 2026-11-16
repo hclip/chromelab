@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChromeLab</title>
+  <meta name="theme-color" content="#0f1117">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Custom title bar: shows when the app runs with Window Controls Overlay -->
+  <header id="titlebar">
+    <span class="logo">◆</span>
+    <span class="app-name">ChromeLab</span>
+    <span id="title-status" class="pill">browser tab</span>
+    <span class="spacer"></span>
+    <span id="net" class="pill">online</span>
+  </header>
+
+  <div id="layout">
+    <nav id="tabs">
+      <button data-tab="overview" class="active">Overview</button>
+      <button data-tab="files">Files</button>
+      <button data-tab="hardware">Hardware</button>
+      <button data-tab="system">System</button>
+      <button data-tab="log">Log</button>
+    </nav>
+
+    <main>
+      <!-- OVERVIEW -->
+      <section id="overview" class="panel active">
+        <h1>ChromeLab</h1>
+        <p class="muted">This app tests what an installed web app can do on a Chromebook. Install it first; several features only work in the app window.</p>
+        <div class="row">
+          <button id="install-btn" class="primary" hidden>Install ChromeLab</button>
+          <span id="install-state" class="muted"></span>
+        </div>
+        <h2>Support on this device</h2>
+        <div id="support" class="grid"></div>
+        <h2>Keyboard shortcuts</h2>
+        <table class="keys">
+          <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Open file</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Save</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td><td>Save as</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>1</kbd>…<kbd>5</kbd></td><td>Switch tabs</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd></td><td>Test notification</td></tr>
+          <tr><td><kbd>F11</kbd></td><td>Fullscreen with keyboard lock</td></tr>
+        </table>
+      </section>
+
+      <!-- FILES -->
+      <section id="files" class="panel">
+        <h1>Files</h1>
+        <p class="muted">Opens and saves straight to your Files app. No download-and-reupload. After installing, right-click a .txt, .md or .json file in Files and pick "Open with ChromeLab".</p>
+        <div class="row">
+          <button id="open-file">Open file</button>
+          <button id="new-file">New</button>
+          <button id="save-file">Save</button>
+          <button id="save-as">Save as</button>
+          <button id="open-dir">Open folder</button>
+        </div>
+        <div class="row"><span id="file-name" class="pill">untitled</span><span id="dirty" class="muted"></span></div>
+        <div class="split">
+          <ul id="dir-list" hidden></ul>
+          <textarea id="editor" spellcheck="false" placeholder="Type here, open a file, or drop one onto this window."></textarea>
+        </div>
+      </section>
+
+      <!-- HARDWARE -->
+      <section id="hardware" class="panel">
+        <h1>Hardware</h1>
+        <p class="muted">Each button opens Chrome's own device picker. Nothing connects unless you choose a device.</p>
+
+        <div class="card">
+          <h3>USB <span class="tag">WebUSB</span></h3>
+          <button id="usb-btn">Pick a USB device</button>
+          <pre id="usb-out" class="out"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Serial <span class="tag">Web Serial</span></h3>
+          <p class="muted small">For Arduino, micro:bit and other boards. The board's output streams in below.</p>
+          <div class="row">
+            <select id="baud">
+              <option>9600</option><option>19200</option><option>57600</option><option selected>115200</option>
+            </select>
+            <button id="serial-btn">Connect</button>
+            <button id="serial-close" disabled>Disconnect</button>
+          </div>
+          <div class="row">
+            <input id="serial-send" placeholder="Send a line to the device" disabled>
+            <button id="serial-send-btn" disabled>Send</button>
+          </div>
+          <pre id="serial-out" class="out tall"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Bluetooth <span class="tag">Web Bluetooth</span></h3>
+          <p class="muted small">Picks any nearby device and tries to read its battery level.</p>
+          <button id="bt-btn">Scan for a device</button>
+          <pre id="bt-out" class="out"></pre>
+        </div>
+
+        <div class="card">
+          <h3>HID <span class="tag">WebHID</span></h3>
+          <p class="muted small">Keyboards, macro pads, controllers. Shows raw input reports.</p>
+          <button id="hid-btn">Pick a HID device</button>
+          <pre id="hid-out" class="out tall"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Game controllers <span class="tag">Gamepad</span></h3>
+          <p class="muted small">Plug in or pair a controller and press any button.</p>
+          <div id="pads" class="muted">No controller detected.</div>
+          <button id="rumble-btn">Test rumble</button>
+        </div>
+      </section>
+
+      <!-- SYSTEM -->
+      <section id="system" class="panel">
+        <h1>System</h1>
+
+        <div class="card">
+          <h3>Notifications</h3>
+          <div class="row">
+            <button id="notif-btn">Send test notification</button>
+            <button id="notif-delay">Send in 5 seconds</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>App icon badge <span class="tag">Badging</span></h3>
+          <p class="muted small">Shows a number on the app's icon in the shelf. Installed app only.</p>
+          <div class="row">
+            <button id="badge-up">+1</button>
+            <button id="badge-clear">Clear</button>
+            <span id="badge-val" class="pill">0</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Keep screen awake <span class="tag">Wake Lock</span></h3>
+          <button id="wake-btn">Keep awake: off</button>
+        </div>
+
+        <div class="card">
+          <h3>Clipboard</h3>
+          <div class="row">
+            <input id="clip-in" placeholder="Text to copy" value="Hello from ChromeLab">
+            <button id="clip-copy">Copy</button>
+            <button id="clip-paste">Paste</button>
+          </div>
+          <pre id="clip-out" class="out"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Storage</h3>
+          <div class="row">
+            <button id="storage-btn">Check storage</button>
+            <button id="persist-btn">Make storage persistent</button>
+          </div>
+          <pre id="storage-out" class="out"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Idle detection</h3>
+          <p class="muted small">Notices when you step away or the screen locks.</p>
+          <button id="idle-btn">Start watching</button>
+          <pre id="idle-out" class="out"></pre>
+        </div>
+
+        <div class="card">
+          <h3>Launch info</h3>
+          <pre id="launch-out" class="out"></pre>
+          <p class="muted small">Test the custom link: after installing, open <code>web+chromelab:hello</code> from a link on any page.</p>
+        </div>
+      </section>
+
+      <!-- LOG -->
+      <section id="log" class="panel">
+        <h1>Log</h1>
+        <div class="row"><button id="log-clear">Clear</button></div>
+        <pre id="log-out" class="out tall"></pre>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

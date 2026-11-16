@@ -1,0 +1,41 @@
+{
+  "name": "ChromeLab",
+  "short_name": "ChromeLab",
+  "description": "A test app that exercises the extra powers installed web apps get on ChromeOS.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "background_color": "#0f1117",
+  "theme_color": "#0f1117",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "text/plain": [".txt", ".log"],
+        "text/markdown": [".md"],
+        "application/json": [".json"]
+      }
+    }
+  ],
+  "launch_handler": { "client_mode": "focus-existing" },
+  "share_target": {
+    "action": "./",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  },
+  "protocol_handlers": [
+    { "protocol": "web+chromelab", "url": "./?link=%s" }
+  ],
+  "shortcuts": [
+    { "name": "Files", "url": "./#files", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Hardware", "url": "./#hardware", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "System", "url": "./#system", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
